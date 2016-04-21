@@ -17,9 +17,6 @@ cleanFICORange = loansData['FICO.Range'].map(lambda x: x.split('-'))
 # change from string to integer
 cleanFICORange = cleanFICORange.map(lambda x: [int(n) for n in x])
 
-#first_numbers2 = cleanFICORange.map(lambda x: [int(x[0])])
-
-
 # split the two items in the list
 first_numbers, last_numbers = zip(*cleanFICORange)
 
@@ -49,9 +46,9 @@ model = sm.OLS(y,X)
 f = model.fit()
 
 # output results summary
-print f.summary()
+f.summary()
 
-print loansData[0:5]
+loansData.to_csv('loansData_clean.csv', header=True, index=False)
 
 
 """plt.figure()
