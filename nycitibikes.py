@@ -5,22 +5,27 @@ import requests
 import sqlite3 as lite
 
 
+# not only json, also beautifulsoup
 r = requests.get('http://www.citibikenyc.com/stations/json')
 
+# json vs python dictionary
 key_list = [] #unique list of keys for each station listing
 for station in r.json()['stationBeanList']:
     for k in station.keys():
         if k not in key_list:
             key_list.append(k)
 
-
+# go from nested structure to table structure
 df = json_normalize(r.json()['stationBeanList'])
+
 
 con = lite.connect('citi_bike13.db')
 cur = con.cursor()
 
 with con:
-    cur.execute('CREATE TABLE citibike_reference (id INT PRIMARY KEY, totalDocks INT, city TEXT, altitude INT, stAddress2 TEXT, longitude NUMERIC, postalCode TEXT, testStation TEXT, stAddress1 TEXT, stationName TEXT, landMark TEXT, latitude NUMERIC, location TEXT )')
+    #cur.execute('DROP TABLE citibike_reference') 
+    # also look at possibility if exist function
+	cur.execute('CREATE TABLE citibike_reference (id INT PRIMARY KEY, totalDocks INT, city TEXT, altitude INT, stAddress2 TEXT, longitude NUMERIC, postalCode TEXT, testStation TEXT, stAddress1 TEXT, stationName TEXT, landMark TEXT, latitude NUMERIC, location TEXT )')
 
 #a prepared SQL statement we're going to execute over and over again
 sql = "INSERT INTO citibike_reference (id, totalDocks, city, altitude, stAddress2, longitude, postalCode, testStation, stAddress1, stationName, landMark, latitude, location) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)"
@@ -47,13 +52,6 @@ n = 0
 
 while n < 60:
 
-	# a package with datetime objects
-	import time
-
-	# a package for parsing a string into a Python datetime object
-	from dateutil.parser import parse 
-
-	import collections
 	#take the string and parse it into a Python datetime object
 	exec_time = parse(r.json()['executionTime'])
 
@@ -80,6 +78,8 @@ while n < 60:
 	df = json_normalize(r.json()['stationBeanList'])
 	con = lite.connect('citi_bike13.db')
 	cur = con.cursor()
+
+# unique method and describe method!!
 
 	
 
